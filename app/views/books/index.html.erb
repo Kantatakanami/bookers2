@@ -26,6 +26,8 @@
             <th><strong></strong></th>
             <th><strong>Title</strong></th>
             <th><strong>Opinion</strong></th>
+            <th><strong></strong></th>
+            <th><strong></strong></th>
           </tr>
         </thead>
         </br>
@@ -35,6 +37,25 @@
           <td><%= link_to user_path(book.user.id) do %><%= attachment_image_tag book.user, :profile_image, :fill, 40, 40, fallback: "no_image.jpg"%><% end %></td>
           <td><%= link_to book_path(book.id) do %><%= book.title %><% end %></td>
           <td><%= book.body %></td>
+          <td>
+            <p>
+            <% if book.favorited_by?(current_user) %>
+              <%= link_to book_favorites_path(book), method: :delete do %>
+                <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i><%= book.favorites.count %>
+              <% end %>
+            </p>
+            <% else %>
+            <p>
+              <%= link_to book_favorites_path(book), method: :post do %>
+                <i class="fas fa-heart" aria-hidden="true" style="color: blue;"></i><%= book.favorites.count %>
+              <% end %>
+            </p>
+            <% end %>
+          </td>
+
+          <td>
+            コメント数：<%= book.book_comments.count %>
+          </td>
         </tr>
         <% end %>
         </tbody>

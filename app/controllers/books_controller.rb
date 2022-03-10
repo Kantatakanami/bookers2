@@ -31,6 +31,7 @@ before_action :correct_user, only: [:edit, :update]
     @book = Book.find(params[:id])
     @user_info = @book.user
     @book_new = Book.new
+    @comment = BookComment.new
   end
 
   def edit

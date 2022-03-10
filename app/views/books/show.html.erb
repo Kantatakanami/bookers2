@@ -18,6 +18,25 @@
           </td>
           <td><%= link_to book_path(@book) do %><%= @book.title %><% end %></td>
           <td><%= @book.body%></td>
+          <td>
+          <td>
+              <% if @book.favorited_by?(current_user) %>
+              <%= link_to book_favorites_path(@book), method: :delete do %>
+                <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i><%= @book.favorites.count %>
+              <% end %>
+            </p>
+            <% else %>
+            <p>
+              <%= link_to book_favorites_path(@book), method: :post do %>
+                <i class="fas fa-heart" aria-hidden="true" style="color: blue;"></i><%= @book.favorites.count %>
+              <% end %>
+            </p>
+            <% end %>
+          </td>
+          <td>
+            コメント数：<%= @book.book_comments.count %>
+          </td>
+          </td>
           <%if @book.user == current_user %>
             <td><%= link_to "Edit", edit_book_path(@book.id),class: "botn-text" %></td>
             <td><%= link_to "Destroy", book_path(@book.id), method: :delete, data: { confirm: 'Are you sure?' },class: "botn-text" %></td>
@@ -25,6 +44,48 @@
         </tr>
         </tbody>
       </table>
+
+      <div>
+        <table>
+          <tbody>
+            <% @book.book_comments.each do |book_comment| %>
+              <tr>
+                <td>
+                  <%= attachment_image_tag book_comment.user, :profile_image, :fill, 30, 30, fallback: "no_image.jpg"%>
+                  </br>
+                  <%= link_to user_path(book_comment.user) do %>
+                    <%= book_comment.user.name %>
+                  <% end %>
+                  </td>
+                <td><%= book_comment.comment %></td>
+              <% if book_comment.user == current_user%>
+                <td><%= link_to "Destroy", book_book_comment_path(book_comment.book,book_comment), method: :delete, class:"btn btn-danger" %>
+                </td>
+              <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="comment-form">
+      <% if @comment.errors.any? %>
+        <h3><%= @comment.errors.count %>error prohibited this obj from being saved:</h3>
+      </br>
+      </br>
+      <ul>
+        <% @comment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+      </ul>
+        <% end %>
+      <% end %>
+
+        <%= form_with(model:[@book, @comment], local: true) do |f| %>
+          <%= f.text_area :comment %>
+          </br>
+          <%= f.submit "送信" %>
+        <% end %>
+      </div>
+
     </div>
 
   </div>
